@@ -1,3 +1,6 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
 name: Build and deploy JAR app to Azure Web App - solutionarc-image-resizing
 
 on:
@@ -10,7 +13,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: read # This is required for actions/checkout
 
     steps:
       - uses: actions/checkout@v4
@@ -18,15 +21,15 @@ jobs:
       - name: Set up Java version
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
-          distribution: 'microsoft'
+          java-version: "17"
+          distribution: "microsoft"
 
-      # ✅ IMPORTANT: run Maven where pom.xml is
+      # IMPORTANT: pom.xml is inside image-pipeline-backend/
       - name: Build with Maven
         working-directory: image-pipeline-backend
         run: mvn -B clean package -DskipTests
 
-      # ✅ IMPORTANT: upload jar from the correct target folder
+      # IMPORTANT: jar is produced inside image-pipeline-backend/target/
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
@@ -47,7 +50,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: solutionarc-image-resizing
-          slot-name: Production
+          app-name: "solutionarc-image-resizing"
+          slot-name: "Production"
           package: "*.jar"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_12A5CB965A3F409289F153A66A3CA4D7 }}
